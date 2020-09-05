@@ -35,3 +35,12 @@ hammer medium create --name 'rhcos_empty' \
   --organization 'Red Hat ICSA Team' \
   --path 'http://stargazer.icsa.iad.redhat.com/pub/rhcos' \
   --os-family 'Coreos'
+
+# Create the Operating System
+hammer os create --name 'RHCOS' \
+  --organization 'Red Hat ICSA Team' \
+  --major '8' --family 'Coreos' \
+  --password-hash 'SHA256' \
+  --architectures 'x86_64' \
+  --partition-tables 'rhcos_empty' \
+  --media 'rhcos_empty'
