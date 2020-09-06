@@ -1,0 +1,8 @@
+#cloud-config
+<%#
+kind: provision
+name: CoreOS provision
+model: ProvisioningTemplate
+oses:
+- CoreOS
+%>

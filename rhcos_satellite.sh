@@ -44,3 +44,27 @@ hammer os create --name 'RHCOS' \
   --architectures 'x86_64' \
   --partition-tables 'rhcos_empty' \
   --media 'rhcos_empty'
+
+# PXE Template
+hammer template create --name 'rhcos_pxe' \
+  --organization 'Red Hat ICSA Team' \
+  --description 'PXE template for RHCOS' \
+  --operatingsystems 'RHCOS 8' \
+  --type 'PXELinyx' \
+  --file rhcos_pxe_template.txt
+
+# Empty Provisioning Template
+hammer template create --name 'rhcos_prov' \
+  --organization 'Red Hat ICSA Team' \
+  --description 'Provisioning template for RHCOS' \
+  --operatingsystems 'RHCOS 8' \
+  --type 'provision' \
+  --file rhcos_prov_template.txt
+
+# Get OS ID
+OS_ID=$(hammer --no-headers os list --os-parameters-attributes "name=family\,value=Coreos" | grep 'RHCOS 8' | awk -F\  '{print $1}')
+
+# Set PXE and Provisioning Templates for new OS
+hammer os update --name 'RHCOS 8' --id ${OS_ID} \
+  --organization 'Red Hat ICSA Team' \
+  --provisioning-templates 'rhcos_pxe,rhcos_prov'

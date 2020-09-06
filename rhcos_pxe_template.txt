@@ -1,0 +1,12 @@
+TIMEOUT 10
+
+DEFAULT Red Hat CoreOS default PXELinux
+
+
+LABEL Red Hat CoreOS default PXELinux
+
+  KERNEL boot/rhcos-installer-kernel
+
+  APPEND ip=dhcp rd.neednet=1 initrd=boot/rhcos-installer-initramfs.img console=tty0 console=ttyS0 coreos.autologin=tty1 coreos.autologin=ttyS0 coreos.inst=yes coreos.inst.install_dev=<%= host_param('coreos-dev') %> coreos.first_boot=1 coreos.inst.image_url=http://stargazer.icsa.iad.redhat.com/pub/rhcos/rhcos-metal-bios.raw.gz coreos.inst.ignition_url=<%= host_param('ignition-url') %> coreos.autologin=1
+
+  IPAPPEND 2
