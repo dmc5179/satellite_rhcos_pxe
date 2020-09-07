@@ -65,6 +65,6 @@ hammer template create --name 'rhcos_prov' \
 OS_ID=$(hammer --no-headers os list --os-parameters-attributes "name=family\,value=Coreos" | grep 'RHCOS 8' | awk -F\  '{print $1}')
 
 # Set PXE and Provisioning Templates for new OS
-hammer os update --name 'RHCOS 8' --id ${OS_ID} \
-  --organization 'Red Hat ICSA Team' \
+hammer os update --id ${OS_ID} \
+  --major '8' --family 'Coreos' \
   --provisioning-templates 'rhcos_pxe,rhcos_prov'
