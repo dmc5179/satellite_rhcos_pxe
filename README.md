@@ -23,7 +23,7 @@ satellite-installer --foreman-proxy-tftp true --foreman-proxy-tftp-servername $(
 ```
 
 - Note: In my tests the tftp daemon did not start after running the above command
--       to start the tftp daemon on the Satellite server run the following command
+- To start the tftp daemon on the Satellite server run the following command
 
 ```
 systemctl start tftp
