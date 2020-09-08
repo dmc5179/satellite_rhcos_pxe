@@ -36,7 +36,11 @@ systemctl start tftp
 - Run the following command to enable the DHCP daemon on the satellite server
 
 ```
-satellite-installer --foreman-proxy-dhcp true --foreman-proxy-dhcp-interface ens192 --foreman-proxy-dhcp-range "10.15.169.21 10.15.169.26" --foreman-proxy-dhcp-gateway 10.15.169.254 --foreman-proxy-dhcp-nameservers 10.15.169.20
+satellite-installer --foreman-proxy-dhcp true \
+    --foreman-proxy-dhcp-interface <device name> \
+    --foreman-proxy-dhcp-range "xx.xx.xx.xx xx.xx.xx.xx" \
+    --foreman-proxy-dhcp-gateway xx.xx.xx.xx \
+    --foreman-proxy-dhcp-nameservers xx.xx.xx.xx
 ```
 
 # Issues
