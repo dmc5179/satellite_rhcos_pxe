@@ -2,83 +2,77 @@
 
 
 # Source env vars file
-. env.sh
+. ./env.sh
 
-# TODO: Need to create a subnet with associated TFTP capsule
-hammer subnet --name icsa \
-  --description "icsa" \
-  --boot-mode 'DHCP' \
-  --dns-primary '10.15.169.20' \
-  --domains 'icsa.iad.redhat.com' \
-  --gateway '10.15.169.254' \
-  --organization 'Red Hat ICSA Team' \
-  --location "Tyson's Corner Lab" \
-  --mask '255.255.255.0' \
-  --mtu '9000' \
-  --network-type 'IPv4' \
-  --tftp 'stargazer.icsa.iad.redhat.com'
+# Set up network
+# . ./rhcos_setup_network.sh
 
-# Create Empty Partition Table
-hammer partition-table create --name 'rhcos_empty' \
-  --description 'Emptry partition table for RHCOS' \
-  --os-family 'Coreos' --locked true \
-  --organization 'Red Hat ICSA Team' \
-  --file rhcos_partition.txt
+# 
+# Sets up OS assuming that network stuff is already set up
+#
 
-# Create Installation Media
-hammer medium create --name 'rhcos_empty' \
-  --organization 'Red Hat ICSA Team' \
-  --path 'http://stargazer.icsa.iad.redhat.com/pub/rhcos' \
-  --os-family 'Coreos'
+# Create the media
+hammer medium create --name "Red Hat CoreOS" \
+  --organization "$ORG" \
+  --path "http://localhost/pub/rhcos" \
+  --os-family "Coreos"
 
 # Create the Operating System
 hammer os create --name 'RHCOS' \
-  --organization 'Red Hat ICSA Team' \
+  --organization "$ORG" \
   --major '8' --family 'Coreos' \
   --password-hash 'SHA256' \
   --architectures 'x86_64' \
-  --partition-tables 'rhcos_empty' \
-  --media 'rhcos_empty'
+  --partition-tables 'CoreOS default fake' \
+  --media 'Red Hat CoreOS'
 
-# PXE Template
-hammer template create --name 'rhcos_pxe' \
-  --organization 'Red Hat ICSA Team' \
-  --description 'PXE template for RHCOS' \
+# Create new PXELinux file
+hammer template create --name 'Red Hat CoreOS PXELinux' \
+  --file 'rhcos_pxe_template.txt' \
   --operatingsystems 'RHCOS 8' \
-  --type 'PXELinyx' \
-  --file rhcos_pxe_template.txt
-
-# Empty Provisioning Template
-hammer template create --name 'rhcos_prov' \
-  --organization 'Red Hat ICSA Team' \
-  --description 'Provisioning template for RHCOS' \
-  --operatingsystems 'RHCOS 8' \
-  --type 'provision' \
-  --file rhcos_prov_template.txt
+  --type 'PXELinux' \
+  --location "$LOC" \
+  --organization "$ORG"
 
 # Get OS ID
-OS_ID=$(hammer --no-headers os list --os-parameters-attributes "name=family\,value=Coreos" | grep 'RHCOS 8' | awk -F\  '{print $1}')
+OS_ID=$(hammer --no-headers os list --search "family=Coreos" --fields "id")
 
-# Set PXE and Provisioning Templates for new OS
-hammer os update --id ${OS_ID} \
-  --major '8' --family 'Coreos' \
-  --provisioning-templates 'rhcos_pxe,rhcos_prov'
+for TMPL in 'Red Hat CoreOS PXELinux' 'CoreOS provision'
+do
 
-# TODO: This doesn't quite work. It seems the templates are not config templates?
-#       Without this setting the defaults are not set. Not sure if PXE will work without them
-#hammer os 'set-default-template' --id ${OS_ID} \
-#  --config-template-id 'rhcos_pxe,rhcos_prov'
+	# Associate already existing templates to Operating System
+	hammer template add-operatingsystem --name "$TMPL" \
+	   --operatingsystem-id "$OS_ID"
 
-# Create the bootstrap host
-hammer host create --name "bootstrap-${OCP_CLUSTER_NAME}" \
-  --organization 'Red Hat ICSA Team' \
-  --location "Tyson's Corner Lab'" \
-  --deploy-on 'Bare Metal' \
-  --mac '' \
-  --operating-system-id ${OS_ID} \
-  --architecture 'x86_64' \
-  --media '' \
-  --partition-table '' \
-  --pxe-loader '' \
-  --build '' \
-  --interfaces
+	# Set Template for new OS
+	hammer os add-config-template --config-template "$TMPL" \
+	  --id "$OS_ID" \
+
+	# Add template as default for that type
+	TMPL_ID=$(hammer template info --name "$TMPL" --fields id | awk '{print $2; exit}')
+	hammer os set-default-template --id "$OS_ID" --config-template-id "$TMPL_ID" 
+
+done
+
+hammer hostgroup create --name "Coreos dev" \
+  --compute-resource "$COMPUTE_RESOURCE" \
+  --compute-profile "$COMPUTE_PROFILE" \
+  --domain "$DOMAIN"  \
+  --subnet "Private"  \
+  --operatingsystem "RHCOS 8" \
+  --architecture "x86_64" \
+  --medium "Red Hat CoreOS" \
+  --partition-table "CoreOS default fake" \
+  --pxe-loader "PXELinux BIOS" \
+  --location "$LOC" \
+  --organization "$ORG"
+
+hammer host create --name "$SVRNAME" \
+  --hostgroup "Coreos dev" \
+  --location "$LOC" \
+  --organization "$ORG"
+
+# Start up VM 
+hammer host start --name "${SVRNAME}.$DOMAIN" 
+
+
