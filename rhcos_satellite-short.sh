@@ -19,6 +19,7 @@ OS_ID=$(hammer --no-headers os list --search "family=Coreos" --fields "id")
 
 for TMPL in 'CoreOS PXELinux' 'CoreOS provision'
 do
+
 	# Associate already existing templates to Operating System
 	hammer template add-operatingsystem --name "$TMPL" \
 	   --operatingsystem-id "$OS_ID"
