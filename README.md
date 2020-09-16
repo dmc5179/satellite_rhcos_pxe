@@ -11,7 +11,24 @@ Any pre-requisites that may not be covered by Ansible itself or the role should 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+| Variable               | Default                      | Comments                            |
+| :---                   | :---                         | :---                                |
+| ocp_version            | "4.5.8"                      | OpenShift 4 Version Number          |
+| rhcos_version          | "4.5.6"                      | Red Hat CoreOS Version Number       |
+| ocp_cluster_name       | "caas"                       | OpenShift Cluster Name              |
+| ocp_base_domain        | "example.com"                | OpenShift Base Domain Name          |
+| sat_server             | 'https://localhost'          | Red Hat Satellite Server Url        |
+| sat_ssl_enabled        | false                        | Enable SSL with Satellite Server    |
+| sat_username           | 'admin'                      | Satellite Server User Name          |
+| sat_password           | 'password'                   | Satellite Server Password           |
+| sat_org                | "Disconnected Organization"  | Satellite Server Organization       |
+| sat_loc                | "Disconnected Zone"          | Satellite Server Location           |
+| sat_compute_resource   | "baremetal"                  | Satellite Server Compute Resource   |
+| sat_compute_profile    | "2-Medium"                   | Satellite Server Compute Profile    |
+| sat_domain             | "example.com"                | Satellite Server Domain             |
+| sat_subnet             | "Private"                    | Satellite Server Subnet             |
+| sat_svrname            | "bootstrap"                  | Satellite Server OpenShift host     |
+
 
 Dependencies
 ------------
@@ -27,12 +44,11 @@ Including an example of how to use your role (for instance, with variables passe
       roles:
          - { role: username.rolename, x: 42 }
 
-License
--------
+## License
 
-BSD
+2-clause BSD license, see [LICENSE.md](LICENSE.md)
 
-Author Information
-------------------
+## Contributors
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+- [Dan Clark](https://github.com/dmc5179/) (maintainer)
+- [Calvin Smith](https://github.com/calvingsmith) (contributor)
