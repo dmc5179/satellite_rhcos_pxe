@@ -1,21 +1,9 @@
-#!/bin/bash
-
-
-# Source env vars file
-. ./env.sh
-
-# Set up network
-# . ./rhcos_setup_network.sh
-
+#!/bin/sh
 # 
 # Sets up OS assuming that network stuff is already set up
 #
 
-# Create the media
-hammer medium create --name "Red Hat CoreOS" \
-  --organization "$ORG" \
-  --path "http://localhost/pub/rhcos" \
-  --os-family "Coreos"
+. ./env.sh 
 
 # Create the Operating System
 hammer os create --name 'RHCOS' \
@@ -24,20 +12,12 @@ hammer os create --name 'RHCOS' \
   --password-hash 'SHA256' \
   --architectures 'x86_64' \
   --partition-tables 'CoreOS default fake' \
-  --media 'Red Hat CoreOS'
-
-# Create new PXELinux file
-hammer template create --name 'Red Hat CoreOS PXELinux' \
-  --file 'rhcos_pxe_template.txt' \
-  --operatingsystems 'RHCOS 8' \
-  --type 'PXELinux' \
-  --location "$LOC" \
-  --organization "$ORG"
+  --media 'CoreOS'
 
 # Get OS ID
 OS_ID=$(hammer --no-headers os list --search "family=Coreos" --fields "id")
 
-for TMPL in 'Red Hat CoreOS PXELinux' 'CoreOS provision'
+for TMPL in 'CoreOS PXELinux' 'CoreOS provision'
 do
 
 	# Associate already existing templates to Operating System
@@ -61,7 +41,7 @@ hammer hostgroup create --name "Coreos dev" \
   --subnet "Private"  \
   --operatingsystem "RHCOS 8" \
   --architecture "x86_64" \
-  --medium "Red Hat CoreOS" \
+  --medium "CoreOS" \
   --partition-table "CoreOS default fake" \
   --pxe-loader "PXELinux BIOS" \
   --location "$LOC" \
