@@ -1,8 +1,27 @@
 ---
 
-- name: create new Coreos medium
+- name: Remove {{ sat_hostgroup }} hostgroup
+  theforeman.foreman.hostgroup:
+    name: "{{ sat_hostgroup }}"
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    state: absent
+
+- name: Remove {{ sat_os }} OS
+  theforeman.foreman.operatingsystem:
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    name: '{{ sat_os }}'
+    major: "{{ sat_os_maj | int }}"
+    state: absent
+
+- name: Remove {{ sat_medium }} Medium
   theforeman.foreman.installation_medium:
-    name: "Red Hat CoreOS"
+    name: "{{ sat_medium }}"
     locations:
       - "{{ sat_loc }}"
     organizations:
@@ -13,4 +32,14 @@
     username: "{{ sat_username }}"
     password: "{{ sat_password }}"
     validate_certs: "{{ sat_ssl_enabled }}"
+    state: absent
+
+- name: Remove Red Hat CoreOS PXELinux template
+  theforeman.foreman.provisioning_template:
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    name: 'Red Hat CoreOS PXELinux'
+    file_name: '{{ playbook_dir }}/rhcos_pxe_template.txt'
     state: absent
