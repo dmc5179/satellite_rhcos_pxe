@@ -47,8 +47,31 @@
       - "{{ sat_os }}"
     state: present
 
+- name: Get Operating System ID
+  theforeman.foreman.resource_info:
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    resource: 'operatingsystems'
+    params:
+      name: 'RHCOS'
+      family: 'Coreos'
+  register: oses
+  tags:
+    - osid
+
+# Example on how to get the OS id
+- name: Show OSes
+  debug:
+    msg: "{{ oses.resources | json_query(myquery) }}"
+  vars:
+    myquery: "[? name=='RHCOS'].{ID: id}"
+  tags:
+    - osid
+
 # TODO:
-# Associate already existing templates to Operating System
+# Associate already existing templates to Operating System (DMC: Not sure we need to do this)
 # Set Template for new OS
 # Add template as default for that type
 
