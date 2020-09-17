@@ -1,7 +1,7 @@
 ---
 # tasks file for satellite_rhcos_pxe
 
-- name: create new Coreos medium
+- name: create Red Hat CoreOS  medium
   theforeman.foreman.installation_medium:
     name: "Red Hat CoreOS"
     locations:
@@ -16,3 +16,33 @@
     validate_certs: "{{ sat_ssl_enabled }}"
     state: present
 
+- name: Create {{ sat_os }} OS
+  theforeman.foreman.operatingsystem:
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    name: '{{ sat_os }}'
+    major: "{{ sat_os_maj | int }}"
+    family: "Coreos"
+    architectures:
+      - 'x86_64'
+    password_hash: 'SHA256'
+    state: present
+
+- name: Create Red Hat CoreOS PXELinux template
+  theforeman.foreman.provisioning_template:
+    kind: 'PXELinux'
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    name: 'Red Hat CoreOS PXELinux'
+    file_name: '{{ playbook_dir }}/rhcos_pxe_template.txt'
+    organizations:
+      - "{{ sat_org }}"
+    locations:
+      - "{{ sat_loc }}"
+    operatingsystems:
+      - "{{ sat_os }}"
+    state: present
