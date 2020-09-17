@@ -1,5 +1,4 @@
 ---
-# tasks file for satellite_rhcos_pxe
 
 - name: create new Coreos medium
   theforeman.foreman.installation_medium:
@@ -14,5 +13,4 @@
     username: "{{ sat_username }}"
     password: "{{ sat_password }}"
     validate_certs: "{{ sat_ssl_enabled }}"
-    state: present
-
+    state: absent
