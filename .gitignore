@@ -3,3 +3,4 @@ env.sh
 *.mine
 collections
 ansible.log
+group_vars

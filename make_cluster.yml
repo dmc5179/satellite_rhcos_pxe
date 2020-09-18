@@ -1,0 +1,11 @@
+---
+- hosts: all
+  vars:
+    openshift_bootstrap:
+      - name: bootstrap1
+
+  tasks:
+    - name: Provision Openshift cluster
+      import_role:
+        name: satellite_rhcos_pxe
+        tasks_from: provision.yml
