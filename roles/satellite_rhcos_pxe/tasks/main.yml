@@ -5,10 +5,20 @@
 
 - include_tasks: stage_coreos.yml 
 
-- name: Install require Python Modules
+- name: Install python apypie package if available
+  delegate_to: localhost
+  yum:
+    name: python2-apypie
+    disable_plugin: foreman-protector
+    state: present
+  register: result
+  ignore_errors: true 
+  
+- name: Install require Python Modules ( if RPM is not available)
   delegate_to: localhost
   pip:
     name: apypie
+  when: result is failed
 
 - name: create Red Hat CoreOS medium
   delegate_to: localhost
@@ -19,7 +29,7 @@
     organizations:
       - "{{ sat_org }}"
     os_family: "Coreos"
-    path: "http://localhost/pub/rhcos"
+    path: "http://{{ sat_server }}/pub/rhcos"
     server_url: "{{ sat_server }}"
     username: "{{ sat_username }}"
     password: "{{ sat_password }}"
