@@ -1,5 +1,47 @@
 ---
 
+- name: Remove bootstrap host from {{ sat_hostgroup }} hostgroup
+  theforeman.foreman.host:
+    name: "{{ item.name }}"
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    state: absent
+  with_items:
+    - '{{ openshift_bootstrap }}'
+  when: openshift_bootstrap is defined and openshift_bootstrap.keys() | length > 0
+  tags:
+    - remove_hosts
+
+- name: Remove master hosts from {{ sat_hostgroup }} hostgroup
+  theforeman.foreman.host:
+    name: "{{ item.name }}"
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    state: absent
+  with_items:
+    - '{{ openshift_masters }}'
+  when: openshift_masters is defined and openshift_masters.keys() | length > 0
+  tags:
+    - remove_hosts
+
+- name: Remove worker hosts from {{ sat_hostgroup }} hostgroup
+  theforeman.foreman.host:
+    name: "{{ item.name }}"
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    state: absent
+  with_items:
+    - '{{ openshift_workers }}'
+  when: openshift_workers is defined and openshift_workers.keys() | length > 0
+  tags:
+    - remove_hosts
+
 - name: Remove {{ sat_hostgroup }} hostgroup
   theforeman.foreman.hostgroup:
     name: "{{ sat_hostgroup }}"
