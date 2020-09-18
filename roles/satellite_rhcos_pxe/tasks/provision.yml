@@ -7,14 +7,14 @@
     username: "{{ sat_username }}"
     password: "{{ sat_password }}"
     validate_certs: "{{ sat_ssl_enabled }}"
-    name: "{{ item.name }}.{{ sat_domain }}"
-    mac: "{{ item.mac }}"
-    ip: "{{ item.ip }}"
     hostgroup: "{{ sat_hostgroup }}"
     location: "{{ sat_loc }}"
     organization: "{{ sat_org }}"
     build: '{{ sat_start_build }}'
     state: present
+    name: "{{ item.name }}.{{ sat_domain }}"
+    mac: "{{ item.mac | default(omit) }}"
+    ip: "{{ item.mac | default(omit) }}"
   with_items:
     - '{{ openshift_bootstrap }}'
   when: openshift_bootstrap is defined and openshift_bootstrap | length > 0
@@ -29,8 +29,8 @@
     password: "{{ sat_password }}"
     validate_certs: "{{ sat_ssl_enabled }}"
     name: "{{ item.name }}.{{ sat_domain }}"
-    mac: "{{ item.mac }}"
-    ip: "{{ item.ip }}"
+    mac: "{{ item.mac | default(omit) }}"
+    ip: "{{ item.ip | default(omit) }}"
     hostgroup: "{{ sat_hostgroup }}"
     location: "{{ sat_loc }}"
     organization: "{{ sat_org }}"
@@ -50,8 +50,8 @@
     password: "{{ sat_password }}"
     validate_certs: "{{ sat_ssl_enabled }}"
     name: "{{ item.name }}.{{ sat_domain }}"
-    mac: "{{ item.mac }}"
-    ip: "{{ item.ip }}"
+    mac: "{{ item.mac | default(omit) }}"
+    ip: "{{ item.ip | default(omit) }}"
     hostgroup: "{{ sat_hostgroup }}"
     location: "{{ sat_loc }}"
     organization: "{{ sat_org }}"
