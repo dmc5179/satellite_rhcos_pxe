@@ -1,19 +1,23 @@
 - name: "Create directory structure"
+  become: true
   file:
     path: "/var/www/html/pub/rhcos/amd64-usr/8/"
     state: directory
 
 - name: "CoreOS vmlinux file"
+  become: true
   get_url: 
     url: "{{ coreos_installer_kernel }}"
     dest: "/var/www/html/pub/rhcos/amd64-usr/8/coreos_production_pxe.vmlinuz"
 
 - name: "CoreOS initrd file"
+  become: true
   get_url:
     url: "{{ coreos_installer_initrd }}"
     dest: "/var/www/html/pub/rhcos/amd64-usr/8/coreos_production_pxe_image.cpio.gz"
 
 - name: "CoreOS image"
+  become: true
   get_url:
     url: "{{ coreos_installer_image }}"
     dest: "/var/www/html/pub/rhcos/rhcos-metal-bios.raw.gz"
