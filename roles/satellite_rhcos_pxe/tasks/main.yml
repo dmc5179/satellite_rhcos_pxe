@@ -136,7 +136,7 @@
   when: not (sat_compute_resource == 'baremetal')
 
 
-- name: Create a host
+- name: Create bootstrap host
   theforeman.foreman.host:
     server_url: "{{ sat_server }}"
     username: "{{ sat_username }}"
@@ -146,12 +146,51 @@
     hostgroup: "{{ sat_hostgroup }}"
     location: "{{ sat_loc }}"
     organization: "{{ sat_org }}"
-    build: "true"
+    build: '{{ sat_start_build }}'
     state: present
+  with_items:
+    - '{{ openshift_bootstrap }}'
+  when: openshift_bootstrap is defined and openshift_bootstrap.keys() | length > 0
   tags:
     - create_host
 
-- name: boot host
+- name: Create master hosts
+  theforeman.foreman.host:
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    name: "{{ sat_svrname }}.{{ sat_domain }}"
+    hostgroup: "{{ sat_hostgroup }}"
+    location: "{{ sat_loc }}"
+    organization: "{{ sat_org }}"
+    build: '{{ sat_start_build }}'
+    state: present
+  with_items:
+    - '{{ openshift_masters }}'
+  when: openshift_masters is defined and openshift_masters.keys() | length > 0
+  tags:
+    - create_host
+
+- name: Create worker hosts
+  theforeman.foreman.host:
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    name: "{{ sat_svrname }}.{{ sat_domain }}"
+    hostgroup: "{{ sat_hostgroup }}"
+    location: "{{ sat_loc }}"
+    organization: "{{ sat_org }}"
+    build: '{{ sat_start_build }}'
+    state: present
+  with_items:
+    - '{{ openshift_workers }}'
+  when: openshift_workers is defined and openshift_workers.keys() | length > 0
+  tags:
+    - create_host
+
+- name: Power on the bootstrap node
   theforeman.foreman.host_power:
     server_url: "{{ sat_server }}"
     username: "{{ sat_username }}"
