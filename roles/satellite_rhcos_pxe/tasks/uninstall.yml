@@ -1,6 +1,7 @@
 ---
 
 - name: Remove bootstrap host from {{ sat_hostgroup }} hostgroup
+  delegate_to: localhost
   theforeman.foreman.host:
     name: "{{ item.name }}.{{ sat_domain }}"
     server_url: "{{ sat_server }}"
@@ -15,6 +16,7 @@
     - remove_hosts
 
 - name: Remove master hosts from {{ sat_hostgroup }} hostgroup
+  delegate_to: localhost
   theforeman.foreman.host:
     name: "{{ item.name }}.{{ sat_domain }}"
     server_url: "{{ sat_server }}"
@@ -29,6 +31,7 @@
     - remove_hosts
 
 - name: Remove worker hosts from {{ sat_hostgroup }} hostgroup
+  delegate_to: localhost
   theforeman.foreman.host:
     name: "{{ item.name }}.{{ sat_domain }}"
     server_url: "{{ sat_server }}"
@@ -43,6 +46,7 @@
     - remove_hosts
 
 - name: Remove {{ sat_hostgroup }} hostgroup
+  delegate_to: localhost
   theforeman.foreman.hostgroup:
     name: "{{ sat_hostgroup }}"
     server_url: "{{ sat_server }}"
@@ -52,6 +56,7 @@
     state: absent
 
 - name: Remove {{ sat_os }} OS
+  delegate_to: localhost
   theforeman.foreman.operatingsystem:
     server_url: "{{ sat_server }}"
     username: "{{ sat_username }}"
@@ -62,6 +67,7 @@
     state: absent
 
 - name: Remove {{ sat_medium }} Medium
+  delegate_to: localhost
   theforeman.foreman.installation_medium:
     name: "{{ sat_medium }}"
     locations:
@@ -77,6 +83,7 @@
     state: absent
 
 - name: Remove Red Hat CoreOS PXELinux template
+  delegate_to: localhost
   theforeman.foreman.provisioning_template:
     server_url: "{{ sat_server }}"
     username: "{{ sat_username }}"
