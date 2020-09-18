@@ -1,0 +1,163 @@
+---
+# tasks file for satellite_rhcos_pxe
+
+# Stage coreos installation files
+
+- include_tasks: stage_coreos.yml 
+
+- name: create Red Hat CoreOS medium
+  theforeman.foreman.installation_medium:
+    name: "Red Hat CoreOS"
+    locations:
+      - "{{ sat_loc }}"
+    organizations:
+      - "{{ sat_org }}"
+    os_family: "Coreos"
+    path: "http://localhost/pub/rhcos"
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    state: present
+
+- name: Create Red Hat CoreOS PXELinux template
+  theforeman.foreman.provisioning_template:
+    kind: 'PXELinux'
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    name: 'Red Hat CoreOS PXELinux'
+    file_name: '{{ playbook_dir }}/rhcos_pxe_template.erb'
+    organizations:
+      - "{{ sat_org }}"
+    locations:
+      - "{{ sat_loc }}"
+    state: present
+
+- name: Create {{ sat_os }} OS
+  theforeman.foreman.operatingsystem:
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    name: '{{ sat_os }}'
+    major: "{{ sat_os_maj | int }}"
+    family: "Coreos"
+    architectures: 'x86_64'
+    password_hash: 'SHA256'
+    ptables:
+      - "CoreOS default fake"
+    media: "Red Hat CoreOS"
+    provisioning_templates: ['CoreOS provision','Red Hat CoreOS PXELinux']
+    state: present
+
+- name: Set default provisioning pxelinux
+  theforeman.foreman.os_default_template:
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    operatingsystem: "{{ sat_os }}"
+    provisioning_template: "Red Hat CoreOS PXELinux"
+    template_kind: "PXELinux"
+    state: present
+    
+- name: Set default provisioning templates
+  theforeman.foreman.os_default_template:
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    operatingsystem: "{{ sat_os }}"
+    provisioning_template: "CoreOS provision"
+    template_kind: "provision"
+    state: present
+    
+
+- name: Get Operating System ID
+  theforeman.foreman.resource_info:
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    resource: 'operatingsystems'
+    params:
+      name: 'RHCOS'
+      family: 'Coreos'
+  register: oses
+  tags:
+    - osid
+
+# Example on how to get the OS id
+- name: Show OSes
+  debug:
+    msg: "{{ oses.resources | json_query(myquery) }}"
+  vars:
+    myquery: "[? name=='RHCOS'].{ID: id}"
+  tags:
+    - osid
+
+- name: Create hostgroup
+  theforeman.foreman.hostgroup:
+    name: "{{ sat_hostgroup }}"
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    domain: "{{ sat_domain }}"
+    subnet: "{{ sat_subnet }}"
+    operatingsystem: "{{ sat_os }}"
+    medium: "Red Hat CoreOS"
+    ptable: "CoreOS default fake"
+    architecture: 'x86_64'
+    parameters:
+      - name: coreos_install_dev
+        value: "{{ coreos_install_dev }}"
+      - name: coreos_ignition_url
+        value: "{{ coreos_ignition_url }}"
+    pxe_loader: "PXELinux BIOS"
+    organization: "{{ sat_org }}"
+    locations: 
+      - "{{ sat_loc }}"
+    state: present
+  tags:
+    - hostgroup
+
+- name: set up compute profile if not baremetal
+  theforeman.foreman.hostgroup:
+    name: "{{ sat_hostgroup }}"
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    compute_resource: "{{ sat_compute_resource }}"
+    compute_profile: "{{ sat_compute_profile }}"
+  when: not (sat_compute_resource == 'baremetal')
+
+
+- name: Create a host
+  theforeman.foreman.host:
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    name: "{{ sat_svrname }}.{{ sat_domain }}"
+    hostgroup: "{{ sat_hostgroup }}"
+    location: "{{ sat_loc }}"
+    organization: "{{ sat_org }}"
+    build: "true"
+    state: present
+  tags:
+    - create_host
+
+- name: boot host
+  theforeman.foreman.host_power:
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    name: "{{ sat_svrname }}.{{ sat_domain }}"
+    state: on
+  tags:
+    - create_host
