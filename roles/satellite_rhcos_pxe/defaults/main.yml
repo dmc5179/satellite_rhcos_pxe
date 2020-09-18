@@ -6,6 +6,10 @@ rhcos_version: "4.5.6"
 ocp_cluster_name: "caas"
 ocp_base_domain: "example.com"
 
+# OpenShift Hosts
+openshift_bootstrap: {}
+openshift_masters: {}
+openshift_workers: {}
 
 # Satellite settings
 
@@ -28,8 +32,11 @@ sat_os_maj: 8
 
 # Coreos settings 
 
+base_url: 'https://mirror.openshift.com/pub/openshift-v4'
+arch: 'x86_64'
+maj_ver: '{{ (rhcos_version | splitext)[0] }}'
 coreos_ignition_url: ""
 coreos_install_dev: "vda"
-coreos_installer_kernel: "https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/{{ (rhcos_version | splitext)[0] }}/{{ rhcos_version }}/rhcos-{{ rhcos_version }}-x86_64-installer-kernel-x86_64"
-coreos_installer_initrd: " https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/{{ (rhcos_version | splitext)[0] }}/{{ rhcos_version }}/rhcos-{{ rhcos_version }}-x86_64-installer-initramfs.x86_64.img"
-coreos_installer_image: "https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/{{ (rhcos_version | splitext)[0] }}/{{ rhcos_version }}/rhcos-{{ rhcos_version }}-x86_64-metal.x86_64.raw.gz"
+coreos_installer_kernel: "{{ base_url }}/{{ arch }}/dependencies/rhcos/{{ maj_ver }}/{{ rhcos_version }}/rhcos-{{ rhcos_version }}-{{ arch }}-installer-kernel-{{ arch }}"
+coreos_installer_initrd: "{{ base_url }}/{{ arch }}/dependencies/rhcos/{{ maj_ver }}/{{ rhcos_version }}/rhcos-{{ rhcos_version }}-{{ arch }}-installer-initramfs.{{ arch }}.img"
+coreos_installer_image: "{{ base_url }}/{{ arch }}/dependencies/rhcos/{{ maj_ver }}/{{ rhcos_version }}/rhcos-{{ rhcos_version }}-{{ arch }}-metal.{{ arch }}.raw.gz"
