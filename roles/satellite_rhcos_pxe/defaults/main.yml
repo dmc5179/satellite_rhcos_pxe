@@ -29,7 +29,6 @@ sat_compute_resource: "baremetal"
 sat_compute_profile: "2-Medium"
 sat_domain: "example.com"
 sat_subnet: "Private"
-sat_svrname: "bootstrap"
 sat_hostgroup: 'Coreos dev'
 sat_medium: 'Red Hat CoreOS'
 sat_os: 'RHCOS'

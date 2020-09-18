@@ -27,7 +27,6 @@ Role Variables
 | sat_compute_profile    | "2-Medium"                   | Satellite Server Compute Profile    |
 | sat_domain             | "example.com"                | Satellite Server Domain             |
 | sat_subnet             | "Private"                    | Satellite Server Subnet             |
-| sat_svrname            | "bootstrap"                  | Satellite Server OpenShift host     |
 | sat_hostgroup          | "Coreos dev"                 | Satellite Server Hostgroup name     |
 | coreos_ignition_url    | ""                           | URL for ignition file               |
 | coreos_install_dev     | "vda"                        | CoreOS installation device          |
