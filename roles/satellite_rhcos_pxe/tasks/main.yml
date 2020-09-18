@@ -150,7 +150,7 @@
     state: present
   with_items:
     - '{{ openshift_bootstrap }}'
-  when: openshift_bootstrap is defined and openshift_bootstrap.keys() | length > 0
+  when: openshift_bootstrap is defined and openshift_bootstrap | length > 0
   tags:
     - create_host
 
@@ -168,7 +168,7 @@
     state: present
   with_items:
     - '{{ openshift_masters }}'
-  when: openshift_masters is defined and openshift_masters.keys() | length > 0
+  when: openshift_masters is defined and openshift_masters | length > 0
   tags:
     - create_host
 
@@ -186,7 +186,7 @@
     state: present
   with_items:
     - '{{ openshift_workers }}'
-  when: openshift_workers is defined and openshift_workers.keys() | length > 0
+  when: openshift_workers is defined and openshift_workers | length > 0
   tags:
     - create_host
 
