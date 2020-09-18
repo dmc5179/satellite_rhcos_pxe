@@ -7,6 +7,11 @@ ocp_cluster_name: "caas"
 ocp_base_domain: "example.com"
 
 # OpenShift Hosts
+# Each host group takes the form like
+# openshift_workers:
+#   - name: worker0
+#     ip: 192.168.1.100
+#     mac: aa:bb:cc:dd:ee:ff
 openshift_bootstrap: {}
 openshift_masters: {}
 openshift_workers: {}
