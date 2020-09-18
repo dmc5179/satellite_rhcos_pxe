@@ -1,0 +1,13 @@
+<%#
+kind: PXELinux
+name: CoreOS PXELinux
+model: ProvisioningTemplate
+oses:
+- CoreOS
+%>
+DEFAULT coreos
+
+LABEL coreos
+    KERNEL <%= @kernel %>
+    APPEND initrd=<%= @initrd %> ip=dhcp rd.neednet=1 coreos.inst=yes coreos.inst.install_dev=<%= host_param('coreos-dev') %> coreos.first_boot=1 coreos.inst.image_url=<%= foreman_server_fqdn %>/pub/rhcos/rhcos-metal-bios.raw.gz coreos.autologin=1
+

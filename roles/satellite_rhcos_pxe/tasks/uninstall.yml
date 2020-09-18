@@ -83,5 +83,5 @@
     password: "{{ sat_password }}"
     validate_certs: "{{ sat_ssl_enabled }}"
     name: 'Red Hat CoreOS PXELinux'
-    file_name: '{{ playbook_dir }}/rhcos_pxe_template.txt'
+    file_name: "{{ role_path }}/files/rhcos_pxe_template.txt"
     state: absent
