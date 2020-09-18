@@ -1,7 +1,0 @@
----
-- hosts: localhost
-  tasks:
-
-    - name: Configure Satellite Server to support PXE for RHCOS nodes
-      import_role:
-        name: ../../satellite_rhcos_pxe

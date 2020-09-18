@@ -1,5 +1,0 @@
----
-collections:
-  # Install foreman collection from Ansible Galaxy
-  - name: theforeman.foreman
-    source: https://galaxy.ansible.com
