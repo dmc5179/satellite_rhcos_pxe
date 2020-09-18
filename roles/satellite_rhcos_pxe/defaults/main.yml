@@ -1,0 +1,35 @@
+---
+# defaults file for satellite_rhcos_pxe
+
+ocp_version: "4.5.8"
+rhcos_version: "4.5.6"
+ocp_cluster_name: "caas"
+ocp_base_domain: "example.com"
+
+
+# Satellite settings
+
+sat_server: 'https://localhost'
+sat_ssl_enabled: false
+sat_username: 'admin'
+sat_password: 'password'
+
+sat_org: "Disconnected Organization"
+sat_loc: "Disconnected Zone"
+sat_compute_resource: "baremetal"
+sat_compute_profile: "2-Medium"
+sat_domain: "example.com"
+sat_subnet: "Private"
+sat_svrname: "bootstrap"
+sat_hostgroup: 'Coreos dev'
+sat_medium: 'Red Hat CoreOS'
+sat_os: 'RHCOS'
+sat_os_maj: 8
+
+# Coreos settings 
+
+coreos_ignition_url: ""
+coreos_install_dev: "vda"
+coreos_installer_kernel: "https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/{{ (rhcos_version | splitext)[0] }}/{{ rhcos_version }}/rhcos-{{ rhcos_version }}-x86_64-installer-kernel-x86_64"
+coreos_installer_initrd: " https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/{{ (rhcos_version | splitext)[0] }}/{{ rhcos_version }}/rhcos-{{ rhcos_version }}-x86_64-installer-initramfs.x86_64.img"
+coreos_installer_image: "https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/{{ (rhcos_version | splitext)[0] }}/{{ rhcos_version }}/rhcos-{{ rhcos_version }}-x86_64-metal.x86_64.raw.gz"

@@ -63,6 +63,7 @@ hammer hostgroup create --name "Coreos dev" \
   --architecture "x86_64" \
   --medium "Red Hat CoreOS" \
   --partition-table "CoreOS default fake" \
+  --group-parameters-attributes "name=coreos_dev,value=$INSTALL_DEV,name=ignition-url,value=\"$IGNITION_URL\""
   --pxe-loader "PXELinux BIOS" \
   --location "$LOC" \
   --organization "$ORG"
