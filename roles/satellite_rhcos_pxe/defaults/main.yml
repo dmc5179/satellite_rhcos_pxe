@@ -35,6 +35,10 @@ sat_medium: 'Red Hat CoreOS'
 sat_os: 'RHCOS'
 sat_os_maj: 8
 
+# After configuring the Satellite server
+# Should builds be started for each host
+sat_start_build: false
+
 # Coreos settings 
 
 base_url: 'https://mirror.openshift.com/pub/openshift-v4'
