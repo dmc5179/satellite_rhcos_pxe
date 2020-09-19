@@ -97,4 +97,4 @@
   file:
     path: '/var/www/html/pub/rhcos'
     state: absent
-  when: {{ coreos_unstage | bool }}
+  when: "{{ coreos_unstage | bool }}"
