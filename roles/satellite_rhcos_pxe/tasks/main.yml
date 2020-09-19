@@ -3,7 +3,9 @@
 
 # Stage coreos installation files
 
-- include_tasks: stage_coreos.yml 
+- name: Stage Red Hat CoreOS files
+  include_tasks: stage_coreos.yml 
+  when: {{ coreos_stage | bool }}
 
 - name: Install python apypie package if available
   delegate_to: localhost
@@ -157,4 +159,6 @@
     compute_profile: "{{ sat_compute_profile }}"
   when: not (sat_compute_resource == 'baremetal')
 
-
+- name: Create OCP hosts in Satellite Server
+  include_tasks: create_ocp_hosts.yml
+  when: {{ create_ocp_nodes | bool }}
