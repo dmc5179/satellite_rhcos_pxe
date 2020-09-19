@@ -8,6 +8,7 @@
   when: ( coreos_stage | bool )
 
 - name: Install python apypie package if available
+  become: true
   delegate_to: localhost
   yum:
     name: python2-apypie
