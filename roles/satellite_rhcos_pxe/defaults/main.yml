@@ -40,6 +40,9 @@ sat_start_build: false
 
 # Coreos settings 
 
+coreos_stage: false
+coreos_unstage: false
+create_ocp_nodes: true
 base_url: 'https://mirror.openshift.com/pub/openshift-v4'
 arch: 'x86_64'
 maj_ver: '{{ (rhcos_version | splitext)[0] }}'
