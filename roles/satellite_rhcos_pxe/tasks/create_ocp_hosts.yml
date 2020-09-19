@@ -1,0 +1,64 @@
+---
+
+- name: Create bootstrap host
+  delegate_to: localhost
+  theforeman.foreman.host:
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    hostgroup: "{{ sat_hostgroup }}"
+    location: "{{ sat_loc }}"
+    organization: "{{ sat_org }}"
+    build: '{{ sat_start_build }}'
+    state: present
+    name: "{{ item.name }}.{{ sat_domain }}"
+    mac: "{{ item.mac | default(omit) }}"
+    ip: "{{ item.mac | default(omit) }}"
+  with_items:
+    - '{{ openshift_bootstrap }}'
+  when: openshift_bootstrap is defined and openshift_bootstrap | length > 0
+  tags:
+    - create_host
+
+- name: Create master hosts
+  delegate_to: localhost
+  theforeman.foreman.host:
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    name: "{{ item.name }}.{{ sat_domain }}"
+    mac: "{{ item.mac | default(omit) }}"
+    ip: "{{ item.ip | default(omit) }}"
+    hostgroup: "{{ sat_hostgroup }}"
+    location: "{{ sat_loc }}"
+    organization: "{{ sat_org }}"
+    build: '{{ sat_start_build }}'
+    state: present
+  with_items:
+    - '{{ openshift_masters }}'
+  when: openshift_masters is defined and openshift_masters | length > 0
+  tags:
+    - create_host
+
+- name: Create worker hosts
+  delegate_to: localhost
+  theforeman.foreman.host:
+    server_url: "{{ sat_server }}"
+    username: "{{ sat_username }}"
+    password: "{{ sat_password }}"
+    validate_certs: "{{ sat_ssl_enabled }}"
+    name: "{{ item.name }}.{{ sat_domain }}"
+    mac: "{{ item.mac | default(omit) }}"
+    ip: "{{ item.ip | default(omit) }}"
+    hostgroup: "{{ sat_hostgroup }}"
+    location: "{{ sat_loc }}"
+    organization: "{{ sat_org }}"
+    build: '{{ sat_start_build }}'
+    state: present
+  with_items:
+    - '{{ openshift_workers }}'
+  when: openshift_workers is defined and openshift_workers | length > 0
+  tags:
+    - create_host
