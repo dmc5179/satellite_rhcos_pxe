@@ -1,6 +1,10 @@
 ---
 # tasks file for satellite_rhcos_pxe
 
+- name: Check the ignition url is set
+  fail: msg="The variable 'coreos_ignition_url' is not defined"
+  when: (coreos_ignition_url is undefined) or (coreos_ignition_url|length == 0)
+
 # Stage coreos installation files
 
 - name: Stage Red Hat CoreOS files
