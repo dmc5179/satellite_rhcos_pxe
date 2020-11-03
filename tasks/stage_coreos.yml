@@ -8,7 +8,7 @@
 
 - name: "CoreOS vmlinux file"
   become: true
-  get_url: 
+  get_url:
     url: "{{ coreos_installer_kernel }}"
     dest: "/var/www/html/pub/rhcos/amd64-usr/8/coreos_production_pxe.vmlinuz"
 

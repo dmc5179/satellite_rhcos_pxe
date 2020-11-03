@@ -38,7 +38,7 @@ sat_os_maj: 8
 # Should builds be started for each host
 sat_start_build: false
 
-# Coreos settings 
+# Coreos settings
 
 coreos_stage: false
 coreos_unstage: false

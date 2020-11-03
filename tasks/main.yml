@@ -8,7 +8,7 @@
 # Stage coreos installation files
 
 - name: Stage Red Hat CoreOS files
-  include_tasks: stage_coreos.yml 
+  include_tasks: stage_coreos.yml
   when: ( coreos_stage | bool )
 
 - name: Install python apypie package if available
@@ -19,8 +19,8 @@
     disable_plugin: foreman-protector
     state: present
   register: result
-  ignore_errors: true 
-  
+  ignore_errors: true
+
 - name: Install require Python Modules ( if RPM is not available)
   delegate_to: localhost
   pip:
@@ -74,7 +74,7 @@
     ptables:
       - "CoreOS default fake"
     media: "Red Hat CoreOS"
-    provisioning_templates: ['CoreOS provision','Red Hat CoreOS PXELinux']
+    provisioning_templates: ['CoreOS provision', 'Red Hat CoreOS PXELinux']
     state: present
 
 - name: Set default provisioning pxelinux
@@ -88,7 +88,7 @@
     provisioning_template: "Red Hat CoreOS PXELinux"
     template_kind: "PXELinux"
     state: present
-    
+
 - name: Set default provisioning templates
   delegate_to: localhost
   theforeman.foreman.os_default_template:
@@ -100,7 +100,7 @@
     provisioning_template: "CoreOS provision"
     template_kind: "provision"
     state: present
-    
+
 - name: Get Operating System ID
   delegate_to: localhost
   theforeman.foreman.resource_info:
@@ -146,7 +146,7 @@
         value: "{{ coreos_ignition_url }}"
     pxe_loader: "PXELinux BIOS"
     organization: "{{ sat_org }}"
-    locations: 
+    locations:
       - "{{ sat_loc }}"
     state: present
   tags:
