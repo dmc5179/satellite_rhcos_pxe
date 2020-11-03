@@ -1,8 +1,0 @@
----
-- hosts: all
-  tasks:
-
-    - name: Remove RHCOS configuration from Satellite Server
-      import_role:
-        name: satellite_rhcos_pxe
-        tasks_from: uninstall.yml
